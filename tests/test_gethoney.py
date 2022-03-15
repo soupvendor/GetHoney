@@ -1,4 +1,4 @@
-from honeypost_dev import __version__
+from gethoney import __version__
 
 
 def test_version():

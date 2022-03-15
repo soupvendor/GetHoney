@@ -1,2 +1,2 @@
-# HoneyPOST
+# GetHoney
 fastapi honeypot ui

@@ -5,12 +5,18 @@ description = ""
 authors = ["Nick Seldner <nickseldner@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 fastapi = "^0.73.0"
 uvicorn = "^0.17.4"
+requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+black = "^22.1.0"
+flake8 = "^4.0.1"
+
+[tool.black]
+line-length = 120
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

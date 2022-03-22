@@ -1,28 +1,36 @@
-from typing import Optional
 from fastapi import FastAPI
-import os
-from honey import txt_finder
+from gethoney.core.models import Honeypot
+import sqlite3
 
+conn = sqlite3.connect("../data/gethoney.db", check_same_thread=False)
+cur = conn.cursor()
 app = FastAPI()
-directory = os.listdir(path=".")
-test_dict = {0: "honeypot1", 1: "honeypot2", 2: "honeypot3"}
+
+cur.execute(
+    """CREATE TABLE IF NOT EXISTS honeypots
+            (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, url TEXT, description TEXT)"""
+)
+
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
+
+@app.post("/honeypots/")
+def create_honeypots(honeypots: list[Honeypot]):
+
+    cur.executemany(
+        """INSERT INTO honeypots
+                (name, url, description)
+                VALUES (?, ?, ?) """,
+        [(honeypot.name, honeypot.url, honeypot.description) for honeypot in honeypots],
+    )
+    conn.commit()
+
+
 @app.get("/honeypots/")
-def read_items(item_name: str):
-    
-    if item_name in test_dict.values():
-        return {item_name}
-    else:
-        return {"nope"}
-
-# @app.post("/files/")
-# async def create_file(file: bytes = File(...)):
-# #     return {"file_size": len(file)}
-
-# @app.post("/uploadfile/")
-# async def create_upload_file(file: UploadFile):
-#     return {"filename": file.filename}
+def get_honeypots():
+    cur.execute("SELECT * FROM honeypots")
+    data = cur.fetchall()
+    return data

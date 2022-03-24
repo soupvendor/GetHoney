@@ -3,12 +3,12 @@ from gethoney.core.models import Honeypot
 import sqlite3
 
 conn = sqlite3.connect("../data/gethoney.db", check_same_thread=False)
-cur = conn.cursor()
+curr = conn.cursor()
 app = FastAPI()
 
-cur.execute(
+curr.execute(
     """CREATE TABLE IF NOT EXISTS honeypots
-            (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, url TEXT, description TEXT)"""
+    (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, url TEXT, description TEXT)"""
 )
 
 
@@ -20,7 +20,7 @@ def read_root():
 @app.post("/honeypots/")
 def create_honeypots(honeypots: list[Honeypot]):
 
-    cur.executemany(
+    curr.executemany(
         """INSERT INTO honeypots
                 (name, url, description)
                 VALUES (?, ?, ?) """,
@@ -31,6 +31,6 @@ def create_honeypots(honeypots: list[Honeypot]):
 
 @app.get("/honeypots/")
 def get_honeypots():
-    cur.execute("SELECT * FROM honeypots")
-    data = cur.fetchall()
+    curr.execute("SELECT * FROM honeypots")
+    data = curr.fetchall()
     return data

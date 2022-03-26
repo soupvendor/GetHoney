@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from gethoney.main import app
-from gethoney.core.models import Honeypot
-
+from gethoney.models import Honeypot
 
 client = TestClient(app)
 
@@ -13,7 +12,11 @@ def test_read_main():
     assert response.json() == {"Hello": "World"}
 
 
-# async def test_get_honeypots():
+#TODO: Fix assert response as list of Honeypots, not just list
+def test_get_honeypots():
+    response = client.get("/honeypots/")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
 
 
 

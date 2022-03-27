@@ -6,4 +6,4 @@ exclude =
 ignore =
     E203
 
-max_-line-length = 120
+max_line_length = 120

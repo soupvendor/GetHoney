@@ -1,2 +1,2 @@
 # GetHoney
-fastapi honeypot ui
+Centralized logger for multiple honeypots that uses FastAPI

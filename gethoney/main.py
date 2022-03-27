@@ -1,10 +1,8 @@
 from fastapi import FastAPI
-from gethoney.core.models import Honeypot
+from gethoney.models import Honeypot
+from gethoney.crud import conn, curr
 import requests
-import sqlite3
 
-conn = sqlite3.connect("../data/gethoney.db", check_same_thread=False)
-curr = conn.cursor()
 app = FastAPI()
 
 curr.execute(
@@ -16,7 +14,6 @@ curr.execute(
 #     """CREATE TABLE IF NOT EXISTS logs
 #     (id INTEGER PRIMARY KEY, log_id INTEGER, name TEXT))"""
 # )
-
 
 
 @app.get("/")
@@ -43,10 +40,10 @@ def get_honeypots():
     data = curr.fetchall()
     return data
 
+
 # @app.get("/honeypots/logs/")
 # def get_logs(honeypot: list[], )
 
 
 # @app.post("/honeypots/logs/")
 # def create_logs(honeypot: Honeypot):
-    

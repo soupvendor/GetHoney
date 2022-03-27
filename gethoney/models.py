@@ -6,6 +6,7 @@ class Honeypot(BaseModel):
     url: HttpUrl
     description: str = ""
 
+
 class Log(BaseModel):
     name: str
     log_id: int

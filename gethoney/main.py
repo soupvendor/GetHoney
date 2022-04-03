@@ -1,14 +1,13 @@
 from fastapi import FastAPI
-from gethoney.models import Honeypot
-from gethoney.crud import conn, curr
-import requests
 
+from gethoney.crud import Database
+from gethoney.models import Honeypot
+
+gethoney_db = "../data/gethoney.db"
+
+db = Database(gethoney_db)
 app = FastAPI()
 
-curr.execute(
-    """CREATE TABLE IF NOT EXISTS honeypots
-    (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, url TEXT, description TEXT)"""
-)
 
 # curr.execute(
 #     """CREATE TABLE IF NOT EXISTS logs
@@ -16,29 +15,15 @@ curr.execute(
 # )
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
 @app.post("/honeypots/", status_code=201)
 def create_honeypots(honeypots: list[Honeypot]):
-
-    curr.executemany(
-        """INSERT INTO honeypots
-                (name, url, description)
-                VALUES (?, ?, ?) """,
-        [(honeypot.name, honeypot.url, honeypot.description) for honeypot in honeypots],
-    )
-    conn.commit()
+    db.insert_into_db(honeypots)
     return honeypots
 
 
 @app.get("/honeypots/")
 def get_honeypots():
-    curr.execute("SELECT * FROM honeypots")
-    data = curr.fetchall()
-    return data
+    return db.select_from_db()
 
 
 # @app.get("/honeypots/logs/")

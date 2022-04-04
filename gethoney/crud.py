@@ -21,7 +21,15 @@ class Database:
                         VALUES (?, ?, ?) """,
             [(honeypot.name, honeypot.url, honeypot.description) for honeypot in honeypots],
         )
+
         self.conn.commit()
+        self.curr.execute(
+            """SELECT * FROM honeypots WHERE
+                    (name) == VALUES (?) """,
+            (honeypots[0].name),
+        )
+        data = self.curr.fetchall()
+        return data
 
     # TODO: Make Select * dynamic from list in initiator
 

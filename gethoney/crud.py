@@ -25,13 +25,13 @@ class Database:
         )
 
         self.conn.commit()
-        self.curr.execute(
-            """SELECT id FROM honeypots WHERE
-                    (name) == VALUES (?) """,
-            (honeypots[0].name),
-        )
-        data = self.curr.fetchall()
-        return data
+        # self.curr.execute(
+        #     """SELECT id FROM honeypots WHERE
+        #             (name) == VALUES (?) """,
+        #     (honeypots[0].name),
+        # )
+        # data = self.curr.fetchall()
+        # return data
 
     # TODO: Make Select * dynamic from list in initiator
 
@@ -44,17 +44,17 @@ class Database:
         logs = []
 
         fetch = self.curr.execute("""SELECT url FROM honeypots WHERE name == ? """, (honeypot,)).fetchall()
-        data = self.curr.fetchall()
+        url = fetch[0][0]
 
-        return fetch
-        request = requests.get("http://3.137.141.78/")
+        request = requests.get(url)
         data = request.json()
 
         for item in data:
             logs.append(item["name"])
+        return logs
 
 
-gethoney_db = "../data/gethoney.db"
-f = Database(gethoney_db)
+# gethoney_db = "../data/gethoney.db"
+# f = Database(gethoney_db)
 
-print(f.retrieve_logs("string"))
+# print(f.retrieve_logs("test1"))

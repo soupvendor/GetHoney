@@ -1,5 +1,7 @@
 import sqlite3
 
+import requests
+
 from gethoney.models import Honeypot
 
 # TODO: Make dynamic list with table names in initiation
@@ -24,7 +26,7 @@ class Database:
 
         self.conn.commit()
         self.curr.execute(
-            """SELECT * FROM honeypots WHERE
+            """SELECT id FROM honeypots WHERE
                     (name) == VALUES (?) """,
             (honeypots[0].name),
         )
@@ -37,3 +39,22 @@ class Database:
         self.curr.execute("SELECT * FROM honeypots")
         data = self.curr.fetchall()
         return data
+
+    def retrieve_logs(self, honeypot: Honeypot):
+        logs = []
+
+        fetch = self.curr.execute("""SELECT url FROM honeypots WHERE name == ? """, (honeypot,)).fetchall()
+        data = self.curr.fetchall()
+
+        return fetch
+        request = requests.get("http://3.137.141.78/")
+        data = request.json()
+
+        for item in data:
+            logs.append(item["name"])
+
+
+gethoney_db = "../data/gethoney.db"
+f = Database(gethoney_db)
+
+print(f.retrieve_logs("string"))

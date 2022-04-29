@@ -9,10 +9,10 @@ db = Database(gethoney_db)
 app = FastAPI()
 
 
-@app.post("/honeypots/", status_code=201)
-def create_honeypots(honeypots: list[Honeypot]):
-    db.insert_into_db(honeypots)
-    return honeypots
+@app.get("/honeypots/{id}", status_code=200)
+def get_honeypot(id: int):
+    print(id)
+    return db.get_honeypot(id)
 
 
 @app.get("/honeypots/")
@@ -20,17 +20,17 @@ def get_honeypots():
     return db.select_from_db()
 
 
+@app.post("/honeypots/", status_code=201)
+def create_honeypots(honeypots: list[Honeypot]):
+    db.insert_into_db(honeypots)
+    return honeypots
+
+
 @app.delete("/honeypots/{honeypot_id}", status_code=200)
 def delete_honeypot(honeypot_id: int):
-    return db.delete_honeypot(id)
+    return db.delete_honeypot(honeypot_id)
 
 
 @app.put("/honeypots/{honeypot_id}", status_code=200)
-def update_honeypot(honeypot_id: int, honeypot: Honeypot, name=None, url=None, description=None):
-    return db.update_honeypot(honeypot_id, honeypot, name, url, description)
-
-
-@app.get("/honeypots/{id}", status_code=200)
-def get_honeypot(id: int):
-    print(id)
-    return db.get_honeypot(id)
+def update_honeypot(honeypot_id: int, honeypot: Honeypot):
+    return db.update_honeypot(honeypot, honeypot_id)

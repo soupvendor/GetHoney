@@ -66,38 +66,28 @@ class Database:
         )
         self.conn.commit()
 
-    def update_honeypot(self, _id: int, honeypot: Honeypot, name=None, url=None, description=None):
-
-        params = [name or honeypot.name, url or honeypot.url, description or honeypot.description, _id]
+    def update_honeypot(self, honeypot: Honeypot, _id: int):
+        params = [honeypot.name, honeypot.url, honeypot.description, _id]
 
         self.curr.execute("UPDATE honeypots SET name = ?, url = ?, description = ? WHERE id == ?", (params))
         self.conn.commit()
 
     def delete_honeypot(self, _id: int):
-        try:
-            self.curr.execute(
-                """DELETE FROM honeypots
-                WHERE id == ?""",
-                (_id,),
-            )
-            self.conn.commit()
-        except IndexError:
-            return "No honeypots with that id."
+
+        self.curr.execute(
+            """DELETE FROM honeypots
+            WHERE id == ?""",
+            (_id,),
+        )
+        self.conn.commit()
 
     def get_honeypot(self, _id: int):
         data = self.curr.execute("SELECT * FROM honeypots WHERE id == ?", (_id,)).fetchall()
         return data
 
 
+# Random Test Code
+
 # gethoney_db = "../data/gethoney.db"
 # f = Database(gethoney_db)
-# # honeypot = Honeypot(name="aws", url="http://3.137.141.78", description="test1")
 # hp = Honeypot(name="bob", url="http://1.1.1.1", description=" ")
-# # print(f.select_from_db())
-# # f.delete_honeypot("test1")
-# f.update_honeypot(hp, name="bob1", url="http://13.1.1.1", description="test2")
-# # print(f.select_from_db())
-
-# # print(honeypot.url)
-
-# # print(f.retrieve_logs(honeypot))

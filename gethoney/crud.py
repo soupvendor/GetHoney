@@ -13,22 +13,22 @@ class Database:
         self.curr = self.conn.cursor()
         self.curr.execute(
             """CREATE TABLE IF NOT EXISTS honeypots
-        (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, url TEXT, description TEXT)"""
+            (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, url TEXT, description TEXT)"""
         )
         self.curr.execute(
             """CREATE TABLE IF NOT EXISTS logs
-             (id INTEGER PRIMARY KEY AUTOINCREMENT,
-              name TEXT,
-              honeypot_id INTEGER,
-              FOREIGN KEY (honeypot_id) REFERENCES honeypots (id))"""
+            (id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            honeypot_id INTEGER,
+            FOREIGN KEY (honeypot_id) REFERENCES honeypots (id))"""
         )
 
-    def insert_into_db(self, honeypots: list[Honeypot]):
-        self.curr.executemany(
+    def create_honeypot(self, honeypot: Honeypot):
+        self.curr.execute(
             """INSERT INTO honeypots
-                        (name, url, description)
-                        VALUES (?, ?, ?) """,
-            [(honeypot.name, honeypot.url, honeypot.description) for honeypot in honeypots],
+            (name, url, description)
+            VALUES (?, ?, ?) """,
+            (honeypot.name, honeypot.url, honeypot.description),
         )
 
         self.conn.commit()
@@ -44,14 +44,12 @@ class Database:
 
     # TODO: Make Select * dynamic from list in initiator
 
-    def select_from_db(self):
+    def list_honeypots(self):
         data = self.curr.execute("SELECT * FROM honeypots").fetchall()
         return data
 
     def retrieve_logs(self, honeypot: Honeypot):
-
         fetch_url_id = self.curr.execute("SELECT url, id FROM honeypots WHERE name == ?", (honeypot.name,)).fetchall()
-
         url = fetch_url_id[0][0]
         id = fetch_url_id[0][1]
 
@@ -73,7 +71,6 @@ class Database:
         self.conn.commit()
 
     def delete_honeypot(self, _id: int):
-
         self.curr.execute(
             """DELETE FROM honeypots
             WHERE id == ?""",
@@ -81,13 +78,6 @@ class Database:
         )
         self.conn.commit()
 
-    def get_honeypot(self, _id: int):
+    def read_honeypot(self, _id: int):
         data = self.curr.execute("SELECT * FROM honeypots WHERE id == ?", (_id,)).fetchall()
         return data
-
-
-# Random Test Code
-
-# gethoney_db = "../data/gethoney.db"
-# f = Database(gethoney_db)
-# hp = Honeypot(name="bob", url="http://1.1.1.1", description=" ")

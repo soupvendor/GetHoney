@@ -4,8 +4,6 @@ import requests
 
 from gethoney.models import Honeypot
 
-# TODO: Make dynamic list with table names in initiation
-
 
 class Database:
     def __init__(self, db_path: str):
@@ -32,17 +30,6 @@ class Database:
         )
 
         self.conn.commit()
-
-        # TODO: Return exactly what's being inserted into DB, which includes auto incremented ID
-        # self.curr.execute(
-        #     """SELECT id FROM honeypots WHERE
-        #             (name) == VALUES (?) """,
-        #     (honeypots[0].name),
-        # )
-        # data = self.curr.fetchall()
-        # return data
-
-    # TODO: Make Select * dynamic from list in initiator
 
     def list_honeypots(self):
         data = self.curr.execute("SELECT * FROM honeypots").fetchall()

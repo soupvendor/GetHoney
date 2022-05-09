@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Response
 
 from gethoney.crud import Database
 from gethoney.models import Honeypot
@@ -36,10 +36,10 @@ def create_honeypot(honeypot: Honeypot, db: Database = Depends(get_db)) -> Honey
 def delete_honeypot(honeypot_id: int, db: Database = Depends(get_db)) -> Honeypot:
     honeypot = db.read_honeypot(honeypot_id)
     if not honeypot:
-        raise HTTPException(status_code=404, detail="Honeypot not found.")
+        return Response(status_code=404)
     else:
         db.delete_honeypot(honeypot_id)
-        return honeypot
+        return Response(status_code=204)
 
 
 @app.put("/honeypots/{honeypot_id}", status_code=200)

@@ -19,6 +19,10 @@ app.dependency_overrides[get_db] = override_db
 
 client = TestClient(app)
 
+#
+# Create
+#
+
 
 def test_create_honeypot():
     honeypot = Honeypot(name="test", url="http://12.12.1.1", description="test")
@@ -33,16 +37,20 @@ def test_create_honeypot_invalid_url():
         Honeypot(name="test", url="http://12.1", description="test")
 
 
+#
+# List
+#
+
+
 def test_list_honeypots():
     response = client.get("/honeypots/")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
 
-def test_get_nonexistent_honeypot():
-    response = client.get("/honeypots/100")
-    assert response.status_code == 404
-    assert isinstance(response.json(), dict)
+#
+# Read
+#
 
 
 def test_get_honeypot():
@@ -51,20 +59,41 @@ def test_get_honeypot():
     assert isinstance(response.json(), dict)
 
 
-# def test_update_honeypot():
-#     honeypot = Honeypot(name="bob2", url="http://1.2.3.4", description="test")
-#     expected_response = HoneypotResponse(id=1, name="bob2", url="http://1.2.3.4", description="test")
-#     hp_data = honeypot.dict()
-#     client.put("/honeypots/1", json=hp_data)
-#     response = client.get("/honeypots/1").json()
-#     returned_honeypot = HoneypotResponse(id=response[0], name=response[1], url=response[2], description=response[3])
-#     assert expected_response == returned_honeypot
+def test_get_nonexistent_honeypot():
+    response = client.get("/honeypots/100")
+    assert response.status_code == 404
+    assert isinstance(response.json(), dict)
+
+
+#
+# Update
+#
+
+
+def test_update_honeypot():
+    honeypot = Honeypot(name="bob2", url="http://1.2.3.4", description="test")
+    hp_data = honeypot.dict()
+    payload = client.put("/honeypots/1", json=hp_data)
+    response = client.get("/honeypots/1")
+    assert payload.status_code == 200
+    assert response.status_code == 200
+
+
+def test_update_nonexistent_honeypot():
+    honeypot = Honeypot(name="bob2", url="http://1.2.3.4", description="test")
+    hp_data = honeypot.dict()
+    payload = client.put("/honeypots/100", json=hp_data)
+    assert payload.status_code == 404
+
+
+#
+# Delete
+#
 
 
 def test_delete_honeypot():
     response = client.delete("/honeypots/1")
-    assert response.status_code == 200
-    assert isinstance(response.json(), dict)
+    assert response.status_code == 204
 
 
 def test_delete_nonexistent_honeypot():

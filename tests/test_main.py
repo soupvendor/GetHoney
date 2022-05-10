@@ -84,8 +84,8 @@ def test_update_honeypot() -> None:
 
 def test_update_nonexistent_honeypot() -> None:
     data = {"name": "bob", "url": "http://1.2.3.4", "description": "test"}
-    put_response = client.put("/honeypots/100", json=data)
-    assert put_response.status_code == 404
+    response = client.put("/honeypots/100", json=data)
+    assert response.status_code == 404
 
 
 #

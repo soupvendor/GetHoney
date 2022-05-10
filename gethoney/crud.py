@@ -22,11 +22,11 @@ class Database:
             FOREIGN KEY (honeypot_id) REFERENCES honeypots (id))"""
         )
 
-    def db_data(self, id_):
+    def db_data(self, id_) -> list:
         data = self.curr.execute("SELECT * FROM honeypots WHERE id == ?", (id_,)).fetchone()
         return data
 
-    def create_honeypot(self, honeypot: Honeypot) -> None:
+    def create_honeypot(self, honeypot: Honeypot) -> HoneypotResponse:
         self.curr.execute(
             """INSERT INTO honeypots
             (name, url, description)
@@ -34,6 +34,9 @@ class Database:
             (honeypot.name, honeypot.url, honeypot.description),
         )
         self.conn.commit()
+        new_id = self.curr.lastrowid
+        response = HoneypotResponse(id=new_id, name=honeypot.name, url=honeypot.url, description=honeypot.description)
+        return response
 
     def list_honeypots(self) -> list[HoneypotResponse]:
         data = self.curr.execute("SELECT * FROM honeypots").fetchall()

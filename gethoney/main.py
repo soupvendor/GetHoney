@@ -1,49 +1,52 @@
-from fastapi import FastAPI
-from gethoney.models import Honeypot
-from gethoney.crud import conn, curr
-import requests
+from typing import Iterator
+
+from fastapi import Depends, FastAPI, HTTPException, Response
+
+from gethoney.crud import Database
+from gethoney.models import Honeypot, HoneypotResponse
+
+db_path = "../data/gethoney.db"
 
 app = FastAPI()
 
-curr.execute(
-    """CREATE TABLE IF NOT EXISTS honeypots
-    (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, url TEXT, description TEXT)"""
-)
 
-# curr.execute(
-#     """CREATE TABLE IF NOT EXISTS logs
-#     (id INTEGER PRIMARY KEY, log_id INTEGER, name TEXT))"""
-# )
+def get_db() -> Iterator[Database]:
+    yield Database(db_path)
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.get("/honeypots/{id}", status_code=200)
+def get_honeypot(id: int, db: Database = Depends(get_db)) -> HoneypotResponse:
+    honeypot = db.read_honeypot(id)
+    if not honeypot:
+        raise HTTPException(status_code=404, detail="Honeypot not found.")
+    else:
+        return honeypot
+
+
+@app.get("/honeypots/", status_code=200)
+def list_honeypots(db: Database = Depends(get_db)) -> list[HoneypotResponse]:
+    return db.list_honeypots()
 
 
 @app.post("/honeypots/", status_code=201)
-def create_honeypots(honeypots: list[Honeypot]):
-
-    curr.executemany(
-        """INSERT INTO honeypots
-                (name, url, description)
-                VALUES (?, ?, ?) """,
-        [(honeypot.name, honeypot.url, honeypot.description) for honeypot in honeypots],
-    )
-    conn.commit()
-    return honeypots
+def create_honeypot(honeypot: Honeypot, db: Database = Depends(get_db)) -> HoneypotResponse:
+    return db.create_honeypot(honeypot)
 
 
-@app.get("/honeypots/")
-def get_honeypots():
-    curr.execute("SELECT * FROM honeypots")
-    data = curr.fetchall()
-    return data
+@app.delete("/honeypots/{honeypot_id}", status_code=200)
+def delete_honeypot(honeypot_id: int, db: Database = Depends(get_db)) -> HoneypotResponse:
+    honeypot = db.read_honeypot(honeypot_id)
+    if not honeypot:
+        return Response(status_code=404)
+    else:
+        db.delete_honeypot(honeypot_id)
+        return Response(status_code=204)
 
 
-# @app.get("/honeypots/logs/")
-# def get_logs(honeypot: list[], )
-
-
-# @app.post("/honeypots/logs/")
-# def create_logs(honeypot: Honeypot):
+@app.put("/honeypots/{honeypot_id}", status_code=200)
+def update_honeypot(honeypot_id: int, update_data: Honeypot, db: Database = Depends(get_db)) -> HoneypotResponse:
+    data = db.update_honeypot(update_data, honeypot_id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Honeypot not found.")
+    else:
+        return data

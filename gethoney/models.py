@@ -7,6 +7,13 @@ class Honeypot(BaseModel):
     description: str = ""
 
 
+class HoneypotResponse(BaseModel):
+    id: int
+    name: str
+    url: HttpUrl
+    description: str = ""
+
+
 class Log(BaseModel):
     name: str
     log_id: int

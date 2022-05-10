@@ -22,7 +22,7 @@ class Database:
             FOREIGN KEY (honeypot_id) REFERENCES honeypots (id))"""
         )
 
-    def db_data(self, id_) -> list:
+    def _select_row_by_id(self, id_) -> list:
         data = self.curr.execute("SELECT * FROM honeypots WHERE id == ?", (id_,)).fetchone()
         return data
 
@@ -66,13 +66,13 @@ class Database:
         params = [honeypot.name, honeypot.url, honeypot.description, id_]
         self.curr.execute("UPDATE honeypots SET name = ?, url = ?, description = ? WHERE id == ?", (params))
         self.conn.commit()
-        data = self.db_data(id_)
+        data = self._select_row_by_id(id_)
         if data:
             honeypot = HoneypotResponse(id=data[0], name=data[1], url=data[2], description=data[3])
             return honeypot
 
     def delete_honeypot(self, id_: int) -> None:
-        data = self.db_data(id_)
+        data = self._select_row_by_id(id_)
         if data:
             self.curr.execute(
                 """DELETE FROM honeypots
@@ -82,7 +82,7 @@ class Database:
             self.conn.commit()
 
     def read_honeypot(self, id_: int) -> HoneypotResponse:
-        data = self.db_data(id_)
+        data = self._select_row_by_id(id_)
         if data:
             honeypot = HoneypotResponse(id=data[0], name=data[1], url=data[2], description=data[3])
             return honeypot

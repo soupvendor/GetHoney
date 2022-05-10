@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from fastapi import Depends, FastAPI, HTTPException, Response
 
 from gethoney.crud import Database
@@ -8,7 +10,7 @@ db_path = "../data/gethoney.db"
 app = FastAPI()
 
 
-def get_db() -> None:
+def get_db() -> Iterator[Database]:
     yield Database(db_path)
 
 

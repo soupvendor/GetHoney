@@ -1,3 +1,5 @@
+from typing import Iterator
+
 import pytest
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
@@ -9,9 +11,10 @@ from gethoney.models import Honeypot
 test_db = "file::memory:?cache=shared"
 
 
-def override_db() -> None:
+def override_db() -> Iterator[Database]:
     db = Database(test_db)
     db.create_honeypot(Honeypot(name="test", url="http://12.12.1.1", description="test"))
+    db.create_honeypot(Honeypot(name="test2", url="http://12.12.1.2", description="test2"))
     yield db
 
 
@@ -27,7 +30,7 @@ client = TestClient(app)
 def test_create_honeypot() -> None:
     data = {"name": "test", "url": "http://12.12.1.1", "description": "test"}
     response = client.post("/honeypots/", json=data)
-    data["id"] = 2
+    data["id"] = 3
     assert response.status_code == 201
     assert response.json() == data
 
@@ -46,7 +49,7 @@ def test_list_honeypots() -> None:
     response = client.get("/honeypots/")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
-    assert len(response.json()) == 1
+    assert len(response.json()) == 2
 
 
 #
@@ -66,9 +69,9 @@ def test_get_nonexistent_honeypot() -> None:
     assert isinstance(response.json(), dict)
 
 
-# #
-# # Update
-# #
+#
+# Update
+#
 
 
 def test_update_honeypot() -> None:

@@ -50,7 +50,7 @@ def put_honeypot(honeypot_id: int, update_data: Honeypot, db: Database = Depends
 
 
 @app.delete("/honeypots/{honeypot_id}", status_code=200)
-def delete_honeypot_(honeypot_id: int, db: Database = Depends(get_db)) -> HoneypotResponse:
+def delete_honeypot_(honeypot_id: int, db: Database = Depends(get_db)) -> Response:
     honeypot = read_honeypot(honeypot_id, db)
     if not honeypot:
         return Response(status_code=404)

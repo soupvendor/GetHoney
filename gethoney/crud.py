@@ -1,6 +1,5 @@
-from models import Honeypot, HoneypotResponse
-
 from gethoney.db import Database
+from gethoney.models import Honeypot, HoneypotResponse
 
 
 def create_honeypot(honeypot: Honeypot, db: Database) -> HoneypotResponse:
@@ -16,25 +15,27 @@ def create_honeypot(honeypot: Honeypot, db: Database) -> HoneypotResponse:
     return response
 
 
-def read_honeypot(id_: int, db: Database) -> HoneypotResponse:
-    data = db._select_row_by_id(id_)
+def read_honeypot(id_: int, db: Database) -> HoneypotResponse | None:
+    data = db.select_row_by_id(id_)
     if data:
         honeypot = HoneypotResponse(id=data[0], name=data[1], url=data[2], description=data[3])
         return honeypot
+    return None
 
 
-def update_honeypot(honeypot: Honeypot, id_: int, db: Database) -> HoneypotResponse:
+def update_honeypot(honeypot: Honeypot, id_: int, db: Database) -> HoneypotResponse | None:
     params = [honeypot.name, honeypot.url, honeypot.description, id_]
     db.curr.execute("UPDATE honeypots SET name = ?, url = ?, description = ? WHERE id == ?", (params))
     db.conn.commit()
-    data = db._select_row_by_id(id_)
+    data = db.select_row_by_id(id_)
     if data:
-        honeypot = HoneypotResponse(id=data[0], name=data[1], url=data[2], description=data[3])
-        return honeypot
+        payload = HoneypotResponse(id=data[0], name=data[1], url=data[2], description=data[3])
+        return payload
+    return None
 
 
 def delete_honeypot(id_: int, db: Database) -> None:
-    data = db._select_row_by_id(id_)
+    data = db.select_row_by_id(id_)
     if data:
         db.curr.execute(
             """DELETE FROM honeypots

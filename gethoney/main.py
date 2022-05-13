@@ -2,6 +2,7 @@ from typing import Iterator
 
 from fastapi import Depends, FastAPI, HTTPException, Response
 
+from config import settings
 from gethoney.crud import (
     create_honeypot,
     delete_honeypot,
@@ -12,13 +13,11 @@ from gethoney.crud import (
 from gethoney.db import Database
 from gethoney.models import Honeypot, HoneypotResponse
 
-db_path = "../data/gethoney.db"
-
 app = FastAPI()
 
 
 def get_db() -> Iterator[Database]:
-    yield Database(db_path)
+    yield Database(settings.db_path)
 
 
 @app.get("/honeypots/{honeypot_id}", status_code=200)

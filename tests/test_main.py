@@ -4,7 +4,8 @@ import pytest
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from gethoney.crud import Database
+from gethoney.crud import create_honeypot
+from gethoney.db import Database
 from gethoney.main import app, get_db
 from gethoney.models import Honeypot
 
@@ -13,8 +14,8 @@ test_db = "file::memory:?cache=shared"
 
 def override_db() -> Iterator[Database]:
     db = Database(test_db)
-    db.create_honeypot(Honeypot(name="test", url="http://12.12.1.1", description="test"))
-    db.create_honeypot(Honeypot(name="test2", url="http://12.12.1.2", description="test2"))
+    create_honeypot(Honeypot(name="test", url="http://12.12.1.1", description="test"), db)
+    create_honeypot(Honeypot(name="test2", url="http://12.12.1.2", description="test2"), db)
     yield db
 
 

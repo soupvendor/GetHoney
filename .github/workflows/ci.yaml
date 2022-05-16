@@ -36,6 +36,9 @@ jobs:
     - name: Code quality
       run: poetry run black . --check
 
+    - name: Lint code
+      run:
+
     - name: Run tests
       run: |
         source .venv/bin/activate

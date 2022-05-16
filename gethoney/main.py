@@ -20,8 +20,8 @@ def get_db() -> Iterator[Database]:
     yield Database(settings.db_path)
 
 
-@app.get("/honeypots/{honeypot_id}", status_code=200)
-def get_honeypot(honeypot_id: int, db: Database = Depends(get_db)) -> HoneypotResponse:
+@app.get("/honeypots/{honeypot_id}", status_code=200, response_model=HoneypotResponse)
+async def get_honeypot(honeypot_id: int, db: Database = Depends(get_db)) -> HoneypotResponse:
     honeypot = read_honeypot(honeypot_id, db)
     if not honeypot:
         raise HTTPException(status_code=404, detail="Honeypot not found.")
@@ -29,18 +29,18 @@ def get_honeypot(honeypot_id: int, db: Database = Depends(get_db)) -> HoneypotRe
         return honeypot
 
 
-@app.get("/honeypots/", status_code=200)
-def get_honeypots(db: Database = Depends(get_db)) -> list[HoneypotResponse]:
+@app.get("/honeypots/", status_code=200, response_model=list[HoneypotResponse])
+async def get_honeypots(db: Database = Depends(get_db)) -> list[HoneypotResponse]:
     return list_honeypots(db)
 
 
-@app.post("/honeypots/", status_code=201)
-def post_honeypot(honeypot: Honeypot, db: Database = Depends(get_db)) -> HoneypotResponse:
+@app.post("/honeypots/", status_code=201, response_model=HoneypotResponse)
+async def post_honeypot(honeypot: Honeypot, db: Database = Depends(get_db)) -> HoneypotResponse:
     return create_honeypot(honeypot, db)
 
 
-@app.put("/honeypots/{honeypot_id}", status_code=200)
-def put_honeypot(honeypot_id: int, update_data: Honeypot, db: Database = Depends(get_db)) -> HoneypotResponse:
+@app.put("/honeypots/{honeypot_id}", status_code=200, response_model=HoneypotResponse)
+async def put_honeypot(honeypot_id: int, update_data: Honeypot, db: Database = Depends(get_db)) -> HoneypotResponse:
     data = update_honeypot(update_data, honeypot_id, db)
     if not data:
         raise HTTPException(status_code=404, detail="Honeypot not found.")
@@ -49,7 +49,7 @@ def put_honeypot(honeypot_id: int, update_data: Honeypot, db: Database = Depends
 
 
 @app.delete("/honeypots/{honeypot_id}", status_code=200)
-def delete_honeypot_(honeypot_id: int, db: Database = Depends(get_db)) -> Response:
+async def delete_honeypot_(honeypot_id: int, db: Database = Depends(get_db)) -> Response:
     honeypot = read_honeypot(honeypot_id, db)
     if not honeypot:
         return Response(status_code=404)

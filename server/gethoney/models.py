@@ -7,7 +7,7 @@ class Honeypot(BaseModel):
     description: str = ""
 
 
-class HoneypotResponse(BaseModel):
+class HoneypotResponse(Honeypot):
     id: int
     name: str
     url: HttpUrl

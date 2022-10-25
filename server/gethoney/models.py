@@ -12,9 +12,3 @@ class HoneypotResponse(Honeypot):
     name: str
     url: HttpUrl
     description: str = ""
-
-
-class Log(BaseModel):
-    name: str
-    log_id: int
-    honeypot_id: int

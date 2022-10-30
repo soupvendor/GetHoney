@@ -1,10 +1,11 @@
 import json
 import os
+
 from config import working_dir
 
 
-def scan_all_files(dir: str) -> dict:
-    files = os.listdir(dir)
+def scan_all_files(directory: str) -> dict:
+    files = os.listdir(directory)
     unique_ips = []
     total_list = {}
 
@@ -13,6 +14,7 @@ def scan_all_files(dir: str) -> dict:
             fstring = open_file.readlines()
         total_connections = 0
         for line in fstring:
+            print(file)
             data = json.loads(line)
             if data["eventid"] == "cowrie.session.connect":
                 total_connections += 1

@@ -1,8 +1,7 @@
 from typing import Iterator
 
-from fastapi import Depends, FastAPI, HTTPException, Response
-
 from config import settings
+from fastapi import Depends, FastAPI, HTTPException, Response
 from gethoney.crud import (
     create_honeypot,
     delete_honeypot,

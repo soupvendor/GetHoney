@@ -250,7 +250,7 @@ python-versions = ">=3.6"
 name = "pydantic"
 version = "1.10.2"
 description = "Data validation and settings management using python type hints"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -328,7 +328,7 @@ python-versions = ">=3.7"
 name = "typing-extensions"
 version = "4.4.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -352,7 +352,7 @@ testing = ["coverage (>=6.2)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "c8256f8e8b913baca7381aeea9692750954abf7d7f3bbe84bae21d4cc5e8bd67"
+content-hash = "7d7f258adf1c4d8c355552bef04d6fb79b0e767c216c48bbc5c729f6ff0bf0ce"
 
 [metadata.files]
 attrs = []

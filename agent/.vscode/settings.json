@@ -22,5 +22,6 @@
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "cSpell.words": ["Crowlie", "eventid", "fstring", "gethoney", "pydantic"]
 }

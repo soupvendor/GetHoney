@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "path": "./server"
+    },
+    {
+      "path": "./ui"
+    },
+    {
+      "path": "./agent"
+    }
+  ],
+  "settings": {
+    "cSpell.words": ["gethoney", "isort", "mypy", "pyproject"]
+  }
+}

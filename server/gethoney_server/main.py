@@ -1,16 +1,17 @@
 from typing import Iterator
 
-from config import settings
 from fastapi import Depends, FastAPI, HTTPException, Response
-from gethoney.crud import (
+
+from gethoney_server.config import settings
+from gethoney_server.crud import (
     create_honeypot,
     delete_honeypot,
     list_honeypots,
     read_honeypot,
     update_honeypot,
 )
-from gethoney.db import Database
-from gethoney.models import Honeypot, HoneypotResponse
+from gethoney_server.db import Database
+from gethoney_server.models import Honeypot, HoneypotResponse
 
 app = FastAPI()
 

@@ -1,5 +1,5 @@
-from gethoney.db import Database
-from gethoney.models import Honeypot, HoneypotResponse
+from gethoney_server.db import Database
+from gethoney_server.models import Honeypot, HoneypotResponse
 
 
 def create_honeypot(honeypot: Honeypot, db: Database) -> HoneypotResponse:
